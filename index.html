@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practical project - personal budget</title>
+    <link rel="stylesheet" type="text/css" href="style.css">    
+</head>
+<body>
+    <header>
+        <div id="currentMonth">
+            Available budget in September 2019
+        </div>
+        <div id="balance">
+            <span class="monthBalance">+2,850.00</span>
+        </div>
+        <div id="totalIncome">
+            <div class="headerTotalLabel">Income</div>
+            <div class="incomeSum">+9,500.00</div>
+            <div class="spacer"></div>
+        </div>
+        <div id="totalExpenses">
+            <div class="headerTotalLabel">Expenses</div>
+            <div class="expensesSum">-6,650.00</div>
+            <div class="totExpFrac">
+                <div class="totFrac red">99%</div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section id="newEntryForm">
+            <form>
+                <select class="input" id="newEntryType" name="entryType" required>
+                    <option value="" selected disabled>Select type</option>
+                    <option value="1">Income</option>
+                    <option value="-1">Expense</option>
+                </select>
+                <input class="input" type="text" id="newEntryDescription" name="newEntryDescription" placeholder="Add description"/>
+                <input class="input" type="number" id="newEntryValue" name="newEntryValue" placeholder="Value"/>
+                <input type="button" name="addEntry" id="addNewButton" value="not ready" disabled/>
+                <input type="button" name="resetButton" id="resetButton" value="clear all"/>
+            </form>
+        </section>
+        <section id="data">
+            <div id="incomeSheet">
+                <table class="incTable">
+                    <!-- <tr>
+                        <th colspan="2" class="blue">income</th>
+                    </tr>
+                    <tr>
+                        <td class="oldIncDsc green">Salary</td>
+                        <td class="oldIncVal blue">+3,000.00</td>
+                    </tr>                -->
+                </table>
+            </div>
+            <div id="expensesSheet">
+                <table class="expTable">
+                    <!-- <tr>
+                        <th colspan="3" class="red">Expenses</th>
+                    </tr>
+                    <tr>
+                        <td class="oldExpDsc green">food</td>
+                        <td class="oldExpVal red">-900</td>
+                        <td class="oldExpFrac red"><div class="oldFrac">99%</div></td>
+                    </tr> -->
+                </table>
+            </div>
+        </section>
+    </main>
+    <script src="index.js"></script>
+    <script>
+        if (localStorage.length>0) {
+            financeData.incomes = JSON.parse(localStorage.incomes);
+            financeData.expenses = JSON.parse(localStorage.expenses);
+        }
+        changeTopText();
+        updateTotals();
+        printIncomes();
+        printExpenses();
+        let inputFields = getInput();
+        let submitButton = getButton();
+        let resetButton = document.getElementById("resetButton");
+        checkValidity();
+        for (let i=0; i<inputFields.length; i++){
+            inputFields[i].addEventListener("input", checkValidity);    
+        }       
+        submitButton.addEventListener("click", fill);
+        resetButton.addEventListener("click", resetAll);
+    </script>
+</body>
+</html>

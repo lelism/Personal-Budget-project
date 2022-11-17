@@ -1,0 +1,243 @@
+* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+
+.blue {
+    color: #2B507F;
+}
+
+.red {
+    color: rgb(145, 53, 53);
+}
+
+.green {
+    color: #448573;
+}
+
+.aqua {
+    color: #deece8;
+}
+
+body, html {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+    align-items: center;
+}
+
+header {
+    width: 100%;
+    min-height: 20vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background-image: url(background.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: white;
+}
+
+#currentMonth {
+    padding: 1rem;
+    font-size: 1.75rem;
+    text-align: center;
+}
+
+.monthBalance {
+    font-size: 3rem;
+    padding: 1.5rem;
+}
+
+#balance{
+    margin-bottom: 2rem;
+}
+
+#totalIncome {
+    background-color: #2B507F;
+}
+
+#totalExpenses {
+    background-color: #A04B18;
+    margin-top: 0.6rem;
+    margin-bottom: 1.2rem;
+}
+
+#totalIncome, #totalExpenses {
+    width: 40%;
+    min-width: 25rem;
+    display: flex;
+    justify-content:space-around;
+    align-items: center;
+}
+
+.headerTotalLabel {
+    width: 50%;
+    min-width: 20vw;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 1rem;
+}
+
+.incomeSum, .expensesSum {
+    width: 40%;
+    text-align: right;
+    padding: 1rem;
+}
+
+.spacer, .totExpFrac {
+    width: 10%;
+    min-width: 5rem;
+    text-align: center;
+    padding: 0.2rem 0.7rem;
+}
+
+.totFrac {
+    height: 100%;
+    width: 100%;
+    background-color: #ECCE9D;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+main{
+    width: 100%;
+}
+
+#newEntryForm {
+    width: 100%;
+    border: 1px solid grey;
+    background-color: #EAF5F3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+select {
+    width: 7vw;
+    min-width: 3rem;
+}
+
+select:invalid {
+    color:grey;
+}
+
+select option {
+    color:black;
+}
+
+#newEntryDescription {
+    min-width: 20vw;
+}
+
+#newEntryValue{
+    max-width: 5vw;
+    min-width: 7rem;
+}
+
+select, #newEntryDescription, #newEntryValue, #addNewButton, #resetButton {
+    margin: 1rem 0.25rem;
+    padding: 0.5rem;
+    background-color: white;
+    font-size: 1rem;
+}
+
+#data {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    justify-content: space-around;
+}
+
+#incomeSheet {
+    width:50%;
+    padding: 5vh 1vw 5vh 10vw;
+}
+
+#expensesSheet {
+    width:50%;
+    padding: 5vh 10vw 5vh 1vw;
+}
+
+table{
+    width: 100%;
+    border-collapse: collapse;
+}
+tr {
+    width:100%;
+}
+
+tr:nth-child(2n+3) {
+    background-color: #deece8;
+}
+
+th{
+    text-align: left;
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    padding: 2rem 1rem 0.5rem 0rem; 
+    font-weight: 400; 
+}
+
+td{
+    font-size: 1rem;
+    padding: 0.6rem 0rem;    
+}
+
+th, td {
+    border-bottom: 1px solid #D5ECE6;
+}
+
+.oldIncDsc, .oldExpDsc {
+    text-align: left;
+    width: auto;
+    padding: 0rem 1rem;
+}
+
+.oldIncVal, .oldExpVal {
+    text-align: right;
+    width: 20%;
+    max-width: 8rem;
+    min-width: 5rem;
+    padding-right: 0.5rem;
+}
+
+.oldExpFrac {
+    width: 9%;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.2rem 0.7rem;
+}
+
+.oldFrac {
+    height: 100%;
+    width: 100%;
+    background-color: #ECCE9D;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media only screen and (max-width: 768px)  {
+    #data {
+        flex-wrap: wrap;
+    }
+
+    #incomeSheet, #expensesSheet {
+        width: 100%;
+        /* margin:  */
+        padding: 0vh 10vw 5vh 10vw;
+    }
+}
+
+
