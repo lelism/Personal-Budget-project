@@ -45,48 +45,44 @@
         <section id="data">
             <div id="incomeSheet">
                 <table class="incTable">
-                    <!-- <tr>
-                        <th colspan="2" class="blue">income</th>
-                    </tr>
-                    <tr>
-                        <td class="oldIncDsc green">Salary</td>
-                        <td class="oldIncVal blue">+3,000.00</td>
-                    </tr>                -->
+                    <thead>
+                        <tr>
+                            <th colspan="2" class="blue">income</th>
+                        </tr>
+                    </thead>
+                    <tbody id="incBody">
+                        <!-- 
+                        <tr>
+                            <td class="oldDsc green">Salary</td>
+                            <td class="oldVal blue">+3,000.00</td>
+                        </tr>
+                        -->
+                    </tbody>
                 </table>
             </div>
             <div id="expensesSheet">
                 <table class="expTable">
-                    <!-- <tr>
-                        <th colspan="3" class="red">Expenses</th>
-                    </tr>
-                    <tr>
-                        <td class="oldExpDsc green">food</td>
-                        <td class="oldExpVal red">-900</td>
-                        <td class="oldExpFrac red"><div class="oldFrac">99%</div></td>
-                    </tr> -->
+                    <thead>
+                        <tr>
+                            <th colspan="3" class="red">Expenses</th>
+                        </tr>                         
+                    </thead>
+                    <tbody id="expBody">
+                        <!-- 
+                        <tr>
+                            <td class="oldDsc green">food</td>
+                            <td class="oldVal red">-900</td>
+                            <td class="oldExpFrac red"><div class="oldFrac">99%</div></td>
+                        </tr>
+                         -->
+                    </tbody>
                 </table>
             </div>
         </section>
     </main>
     <script src="index.js"></script>
     <script>
-        if (localStorage.length>0) {
-            financeData.incomes = JSON.parse(localStorage.incomes);
-            financeData.expenses = JSON.parse(localStorage.expenses);
-        }
-        changeTopText();
-        updateTotals();
-        printIncomes();
-        printExpenses();
-        let inputFields = getInput();
-        let submitButton = getButton();
-        let resetButton = document.getElementById("resetButton");
-        checkValidity();
-        for (let i=0; i<inputFields.length; i++){
-            inputFields[i].addEventListener("input", checkValidity);    
-        }       
-        submitButton.addEventListener("click", fill);
-        resetButton.addEventListener("click", resetAll);
+        
     </script>
 </body>
 </html>

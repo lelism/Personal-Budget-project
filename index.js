@@ -1,24 +1,42 @@
-//global data
+//--------------------------------------------------------------
+//      variable assignments for key HTML elements and inputs
+//--------------------------------------------------------------
+const newEntryType = document.getElementById("newEntryType");
+const newEntryDescription = document.getElementById("newEntryDescription");
+const newEntryValue = document.getElementById("newEntryValue");
+const inputs = [newEntryType, newEntryDescription, newEntryValue];
+const submitButton = document.querySelector("#addNewButton");
+const resetButton = document.getElementById("resetButton");
+const monthBalance = document.querySelector(".monthBalance");
+const incomeSum = document.querySelector(".incomeSum");
+const expensesSum = document.querySelector(".expensesSum");
+const expensesFrac = document.querySelector(".totExpFrac .totFrac");
+const incomesTable = document.querySelector("#incBody");
+const expensesTable = document.querySelector("#expBody");
+
+
+//-----------------------------
+//      global variables
+//-----------------------------
 let financeData = {
     expenses: [],
     incomes: [],
     totalIncomes: function () {
         let inc = 0;
-        for (let x of this.incomes){
-            inc+=Number(x.value);
-        }
+        this.incomes.forEach(el => inc+=el.value);
         return inc;
     },
     totalExpenses: function () {
         let exp = 0;
-        for (let x of this.expenses){
-            exp+=Number(x.value);
-        }
+        this.expenses.forEach(el => exp+=el.value);
         return exp;
     }
 }
 
-//functions
+
+//-------------------------------
+//      functions
+//-------------------------------
 function changeTopText () {
     const months = [
         "January",
@@ -39,64 +57,48 @@ function changeTopText () {
     document.querySelector("#currentMonth").innerHTML = text;
 }
 
-function addElement (a, b) {
-    let child = document.createElement(b);
-    document.querySelector(a).appendChild(child);
-}
-
-function addClass (a, b) {
-    document.querySelector(a).classList=b;
-}
-
-function addAttribute (a, b, c) {
-    document.querySelector(a).setAttribute(b, c);
-}
-
-function addText (b, c) {
-    let text = document.createTextNode(c);
-    document.querySelector(b).appendChild(text);
-}
-
-function getInput (){
-    let arr = [];
-    arr[0] = document.getElementById("newEntryType");
-    arr[1] = document.getElementById("newEntryDescription");
-    arr[2] = document.getElementById("newEntryValue");
-    return arr;
-}
-
-function getButton () {
-    return document.querySelector("#addNewButton");
+function updateTotals (){
+    let balance = financeData.totalIncomes()-financeData.totalExpenses();
+    if (balance>=0) {
+        monthBalance.innerText="+"+formatNumber(balance);
+    } else {
+        monthBalance.innerText=formatNumber(balance);
+    }
+    incomeSum.innerText="+"+formatNumber(financeData.totalIncomes());
+    expensesSum.innerText="-"+formatNumber(financeData.totalExpenses());
+    let incExpRatio = 100*(financeData.totalExpenses()/financeData.totalIncomes());
+    if (incExpRatio) {
+        expensesFrac.innerText=Number(incExpRatio).toFixed(1)+"%";
+    } else expensesFrac.innerText="";
 }
 
 function checkValidity () {
-    testMarker = getInput();
-    button = getButton();
-    if ((testMarker[0].value!="") &&(testMarker[1].value!="") && (testMarker[2].value>0)){
-        button.value = "submit";
-        button.disabled = false;
-        return (true);
+    if ((inputs[0].value!="") && (inputs[1].value!="") && (inputs[2].value > 0)){
+        submitButton.value = "submit";
+        submitButton.disabled = false;
+        return true;
     } else {
-        button.value="fill all data";
-        button.disabled = true;
-        return (false);
+        submitButton.value="fill all data";
+        submitButton.disabled = true;
+        return false;
     }
 }
 
 function fill() {
-    let inputs = getInput();
     let budget = {
         description: inputs[1].value,
         value: Number(inputs[2].value),
         date: new Date()
     }
-    if (inputs[0].value>0) {        
+    if (inputs[0].value > 0) {        
         financeData.incomes.push(budget);
-        printIncomes();
+        printIncomes(budget);
     } else {
         financeData.expenses.push(budget);
-        printExpenses(); 
+        printExpenses(budget); 
+        refeshExpFraction()
     }
+    inputs.forEach(el => el.value = "");
     localStorage.clear();
     localStorage.setItem("incomes", JSON.stringify(financeData.incomes));
     localStorage.setItem("expenses", JSON.stringify(financeData.expenses));
@@ -108,73 +110,75 @@ function resetAll(){
         expenses: [],
         incomes: [],
     }
+    inputs.forEach(el => el.value = "");
     location.reload();
 }
 
-function formatNumber (a){
-    let tmp = Number(a).toLocaleString('en-US', { minimumFractionDigits : 2, maximumFractionDigits : 2});
-    return `${tmp}`;
+function formatNumber (nmb){
+    let stringNum = Number(nmb).toLocaleString('en-US', { minimumFractionDigits : 2, maximumFractionDigits : 2});
+    return stringNum;
 }
 
-function getFracNumber (data) {
-    let frac = 100*Number(data.value)/(financeData.totalExpenses());
-    return Number(frac).toFixed(1);
+function refreshTable(){
+    incomesTable.innerHTML="";
+    expensesTable.innerHTML="";
+    financeData.incomes.forEach(item => printIncomes(item));
+    financeData.expenses.forEach(item => printExpenses(item));
+    refeshExpFraction();
 }
 
-function updateTotals (){
-    let tmp = financeData.totalIncomes()-financeData.totalExpenses();
-    if (tmp>=0) {
-        document.querySelector(".monthBalance").innerText="+"+formatNumber(tmp);
-    } else {
-        document.querySelector(".monthBalance").innerText=formatNumber(tmp);
-    }
-    document.querySelector(".incomeSum").innerText="+"+formatNumber(financeData.totalIncomes());
-    document.querySelector(".expensesSum").innerText="-"+formatNumber(financeData.totalExpenses());
-    let tmp2 = 100*(financeData.totalExpenses()/financeData.totalIncomes());
-    if (tmp2) {
-        document.querySelector(".totExpFrac .totFrac").innerText=Number(tmp2).toFixed(1)+"%";
-    } else document.querySelector(".totExpFrac .totFrac").innerText="";
+function refeshExpFraction(){
+    let i = 0;
+    let selector="";
+    let totExpSum= financeData.totalExpenses();
+    financeData.expenses.forEach(expItem => {
+        selector=`#expBody tr:nth-of-type(${i+1}) div`;
+        document.querySelector(selector).innerText="";
+        let frac = 100*Number(expItem.value)/totExpSum;
+        let fractionStr = document.createTextNode(Number(frac).toFixed(1)+"%");
+        document.querySelector(selector).appendChild(fractionStr);
+        i++;
+    });
 }
 
-function printIncomes () {
-    document.querySelector(".incTable").innerHTML="";
-    addElement(".incTable","tr");
-    addElement(".incTable tr","th");
-    addClass(".incTable th", "blue");
-    addAttribute(".incTable th", "colspan", 2);
-    addText(".incTable th", "Incomes");
-    for (incomeElement of financeData.incomes){
-        addElement(".incTable", "tr");
-        addElement(".incTable tr:last-of-type", "td");
-        addClass(".incTable tr:last-of-type td:last-of-type", "oldIncDsc green");
-        addText(".incTable tr:last-of-type td:last-of-type", incomeElement.description);  
-        addElement(".incTable tr:last-of-type", "td");
-        addClass(".incTable tr:last-of-type td:last-of-type", "oldIncVal blue");
-        addText(".incTable tr:last-of-type td:last-of-type", "+"+formatNumber(incomeElement.value));
-    }
+function printIncomes (singleItem) {
+    let trow = 
+        `<tr>
+            <td class="oldDsc green">${singleItem.description}</td>
+            <td class="oldVal blue">-${formatNumber(singleItem.value)}</td>
+        </tr>`;
+    incomesTable.innerHTML+=trow;
     updateTotals();
 }
 
-function printExpenses () {
-    document.querySelector(".expTable").innerHTML="";
-    addElement(".expTable","tr");
-    addElement(".expTable tr","th");
-    addClass(".expTable th", "red");
-    addAttribute(".expTable th", "colspan", 3);
-    addText(".expTable th", "Expenses");
-    for (expensesElement of financeData.expenses){
-        addElement(".expTable", "tr");
-        addElement(".expTable tr:last-of-type", "td");
-        addClass(".expTable tr:last-of-type td:last-of-type", "oldExpDsc green");
-        addText(".expTable tr:last-of-type td:last-of-type", expensesElement.description);  
-        addElement(".expTable tr:last-of-type", "td");
-        addClass(".expTable tr:last-of-type td:last-of-type", "oldExpVal red");
-        addText(".expTable tr:last-of-type td:last-of-type", "-"+formatNumber(expensesElement.value));
-        addElement(".expTable tr:last-of-type", "td");
-        addClass(".expTable tr:last-of-type td:last-of-type", "oldExpFrac red");
-        addElement(".expTable tr:last-of-type td:last-of-type", "div");
-        addClass(".expTable tr:last-of-type div", "oldFrac");
-        addText(".expTable tr:last-of-type div", getFracNumber(expensesElement)+"%");
-    }
+function printExpenses (singleItem) {
+    let trow = 
+        `<tr>
+            <td class="oldDsc green">${singleItem.description}</td>
+            <td class="oldVal red">-${formatNumber(singleItem.value)}</td>
+            <td class="oldExpFrac red"><div class="oldFrac"></div></td>  
+        </tr>`;
+    expensesTable.innerHTML+=trow;
     updateTotals();
 }
+
+function init() {
+    if (localStorage.length>0) {
+        financeData.incomes = JSON.parse(localStorage.incomes);
+        financeData.expenses = JSON.parse(localStorage.expenses);
+    }
+    changeTopText();
+    updateTotals();
+    refreshTable();
+    checkValidity();
+    inputs.forEach(el => el.addEventListener("input", checkValidity));
+    submitButton.addEventListener("click", fill);
+    resetButton.addEventListener("click", resetAll);
+}
+
+
+//-------------------------------
+//      initialise app
+//-------------------------------
+init();
+

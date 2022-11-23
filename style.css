@@ -176,7 +176,7 @@ tr {
     width:100%;
 }
 
-tr:nth-child(2n+3) {
+tbody tr:nth-child(2n+1) {
     background-color: #deece8;
 }
 
@@ -197,13 +197,13 @@ th, td {
     border-bottom: 1px solid #D5ECE6;
 }
 
-.oldIncDsc, .oldExpDsc {
+.oldDsc {
     text-align: left;
     width: auto;
     padding: 0rem 1rem;
 }
 
-.oldIncVal, .oldExpVal {
+.oldVal {
     text-align: right;
     width: 20%;
     max-width: 8rem;
